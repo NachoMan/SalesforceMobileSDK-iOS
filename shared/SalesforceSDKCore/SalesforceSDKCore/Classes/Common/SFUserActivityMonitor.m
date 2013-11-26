@@ -26,6 +26,12 @@
 #import "SFApplication.h"
 #import <SalesforceCommonUtils/SFInactivityTimerCenter.h>
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
+#define SFApplicationClass UIApplication
+#elif TARGET_OS_MAC
+#define SFApplicationClass NSApplication
+#endif
+
 // Singleton instance
 static SFUserActivityMonitor *_instance;
 static dispatch_once_t _sharedInstanceGuard;
@@ -77,7 +83,8 @@ static NSTimeInterval const kActivityCheckPeriodSeconds = 20;
 {
     [self stopMonitoring];
     
-    _lastEventDate = [[(SFApplication *)[UIApplication sharedApplication] lastEventDate] copy];
+    _lastEventDate = [[(SFApplication *)[SFApplicationClass sharedApplication] lastEventDate] copy];
+    
     _monitorTimer = [NSTimer timerWithTimeInterval:kActivityCheckPeriodSeconds
                                              target:self
                                            selector:@selector(timerFired:)
@@ -96,7 +103,7 @@ static NSTimeInterval const kActivityCheckPeriodSeconds = 20;
 
 - (void)timerFired:(NSTimer *)theTimer
 {
-    NSDate *lastEventAsOfNow = [(SFApplication *)[UIApplication sharedApplication] lastEventDate];
+    NSDate *lastEventAsOfNow = [(SFApplication *)[SFApplicationClass sharedApplication] lastEventDate];
     if (![_lastEventDate isEqualToDate:lastEventAsOfNow]) {
         [self log:SFLogLevelDebug format:@"New user activity at %@", lastEventAsOfNow];
         [SFInactivityTimerCenter updateActivityTimestamp];

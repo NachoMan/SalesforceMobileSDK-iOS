@@ -60,6 +60,9 @@
       <Group
          location = "group:SalesforceCommonUtils"
          name = "SalesforceCommonUtils">
+         <FileRef
+            location = "group:SalesforceCommonUtils.dylib">
+         </FileRef>
          <Group
             location = "group:Headers"
             name = "Headers">

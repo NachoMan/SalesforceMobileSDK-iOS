@@ -45,14 +45,9 @@
     return self;
 }
 
-- (void)dealloc
-{
-    SFRelease(_lastEventDate);
-    
-}
-
 #pragma mark - Event handling
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (void)sendEvent:(UIEvent *)event
 {
     NSSet *allTouches = [event allTouches];
@@ -65,5 +60,14 @@
     
     [super sendEvent:event];
 }
+#else
+- (void)sendEvent:(NSEvent *)event
+{
+    // TODO: Investigate if we need to filter out some event types
+    self.lastEventDate = [NSDate date];
+
+    [super sendEvent:event];
+}
+#endif
 
 @end

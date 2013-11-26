@@ -22,12 +22,16 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif
 
 /**
  * Protocol defining an SDK-based app delegate.
  */
-@protocol SFSDKAppDelegate <UIApplicationDelegate>
+@protocol SFSDKAppDelegate <SFApplicationDelegateProtocol>
 
 /**
  The User-Agent string presented by this application
@@ -40,10 +44,12 @@
  */
 - (void)logout;
 
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 /**
  * Creates a snapshot view.
  */
 - (UIView*)createSnapshotView;
+#endif
 
 @end
 
@@ -51,7 +57,7 @@
  * Mobile SDK extension of the UIApplication object.  Currently just gathers
  * date/time information about user events.
  */
-@interface SFApplication : UIApplication
+@interface SFApplication : SFApplicationClass
 
 /**
  * The date of the last user event in the application.
